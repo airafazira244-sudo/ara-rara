@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, MapPin, Phone, Send, Loader2 } from 'lucide-react';
+import { Mail, MapPin, Phone, Send, Loader2, Instagram } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -19,19 +19,25 @@ const contactInfo = [
   {
     icon: Mail,
     label: 'Email',
-    value: 'hello@developer.com',
-    href: 'mailto:hello@developer.com',
+    value: 'airafazira244@gmail.com',
+    href: 'mailto:airafazira244@gmail.com',
   },
   {
     icon: Phone,
-    label: 'Telepon',
-    value: '+62 812 3456 7890',
-    href: 'tel:+6281234567890',
+    label: 'Telepon / WA',
+    value: '0895-1302-2531',
+    href: 'https://wa.me/6289513022531',
+  },
+  {
+    icon: Instagram,
+    label: 'Instagram',
+    value: '@ftrzearaa._',
+    href: 'https://instagram.com/ftrzearaa._',
   },
   {
     icon: MapPin,
     label: 'Lokasi',
-    value: 'Jakarta, Indonesia',
+    value: 'Banda Aceh, Indonesia',
     href: '#',
   },
 ];
@@ -43,11 +49,11 @@ export default function ContactSection() {
     subject: '',
     message: '',
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
@@ -55,16 +61,16 @@ export default function ContactSection() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
 
     const result = contactSchema.safeParse(formData);
     if (!result.success) {
-      const fieldErrors: Record<string, string> = {};
+      const fieldErrors = {};
       result.error.errors.forEach((err) => {
         if (err.path[0]) {
-          fieldErrors[err.path[0] as string] = err.message;
+          fieldErrors[err.path[0]] = err.message;
         }
       });
       setErrors(fieldErrors);
@@ -74,7 +80,7 @@ export default function ContactSection() {
     setIsSubmitting(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('send-contact-email', {
+      const { error } = await supabase.functions.invoke('send-contact-email', {
         body: formData,
       });
 
@@ -82,15 +88,15 @@ export default function ContactSection() {
 
       toast({
         title: 'Pesan Terkirim! ✨',
-        description: 'Terima kasih telah menghubungi saya. Saya akan membalas secepatnya.',
+        description: 'Terima kasih, Aira akan segera membalas pesanmu!',
       });
 
       setFormData({ name: '', email: '', subject: '', message: '' });
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error sending email:', error);
       toast({
         title: 'Gagal Mengirim',
-        description: 'Terjadi kesalahan. Silakan coba lagi atau hubungi langsung via email.',
+        description: 'Coba lagi nanti atau hubungi via WhatsApp/IG ya.',
         variant: 'destructive',
       });
     } finally {
@@ -99,7 +105,7 @@ export default function ContactSection() {
   };
 
   return (
-    <section id="contact" className="py-20 md:py-32">
+    <section id="contact" className="py-20 md:py-32 bg-[#FFF0F3]">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -108,11 +114,11 @@ export default function ContactSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="text-primary font-medium mb-2 block">Kontak</span>
-          <h2 className="font-display text-3xl md:text-5xl font-bold mb-4">
+          <span className="text-[#FF85A1] font-bold mb-2 block tracking-widest uppercase text-sm">Say Hello</span>
+          <h2 className="font-display text-3xl md:text-5xl font-bold mb-4 text-[#4A3B3C]">
             Hubungi Saya
           </h2>
-          <div className="w-20 h-1 bg-primary mx-auto rounded-full" />
+          <div className="w-16 h-1.5 bg-[#FF85A1] mx-auto rounded-full" />
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
@@ -125,33 +131,32 @@ export default function ContactSection() {
             className="space-y-8"
           >
             <div>
-              <h3 className="font-display text-2xl font-bold mb-4">
-                Mari Berkolaborasi!
+              <h3 className="font-display text-2xl font-bold mb-4 text-[#4A3B3C]">
+                Mari Berteman!
               </h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Punya project menarik atau ingin berkolaborasi? Jangan ragu untuk 
-                menghubungi saya. Saya selalu terbuka untuk diskusi tentang project 
-                baru, ide kreatif, atau kesempatan untuk menjadi bagian dari visi Anda.
+              <p className="text-[#6B5B5C] leading-relaxed">
+                Punya ide seru atau ingin berdiskusi? Silakan hubungi saya melalui form di samping atau melalui sosial media saya di bawah ini.
               </p>
             </div>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {contactInfo.map((info, index) => (
                 <motion.a
                   key={info.label}
                   href={info.href}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
+                  target={info.href.startsWith('http') ? "_blank" : undefined}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
-                  className="flex items-center gap-4 p-4 glass rounded-xl hover:shadow-card-hover transition-all group"
+                  className="flex items-center gap-4 p-4 bg-white/80 backdrop-blur-md border border-[#FFD1DC] rounded-2xl hover:shadow-md transition-all group"
                 >
-                  <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                    <info.icon className="h-5 w-5 text-primary" />
+                  <div className="p-3 rounded-xl bg-[#FFF0F3] text-[#FF85A1] group-hover:bg-[#FF85A1] group-hover:text-white transition-colors">
+                    <info.icon size={20} />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">{info.label}</p>
-                    <p className="font-medium">{info.value}</p>
+                    <p className="text-[10px] uppercase tracking-wider text-[#FF85A1] font-bold">{info.label}</p>
+                    <p className="text-xs font-medium text-[#4A3B3C] truncate max-w-[150px]">{info.value}</p>
                   </div>
                 </motion.a>
               ))}
@@ -165,94 +170,51 @@ export default function ContactSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <form onSubmit={handleSubmit} className="space-y-6 p-6 glass rounded-2xl shadow-card">
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label htmlFor="name" className="text-sm font-medium">
-                    Nama
-                  </label>
-                  <Input
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Nama Anda"
-                    className={errors.name ? 'border-destructive' : ''}
-                  />
-                  {errors.name && (
-                    <p className="text-xs text-destructive">{errors.name}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="email" className="text-sm font-medium">
-                    Email
-                  </label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="email@example.com"
-                    className={errors.email ? 'border-destructive' : ''}
-                  />
-                  {errors.email && (
-                    <p className="text-xs text-destructive">{errors.email}</p>
-                  )}
-                </div>
-              </div>
-
+            <form onSubmit={handleSubmit} className="space-y-4 p-8 bg-white border border-[#FFD1DC] rounded-[2.5rem] shadow-sm">
               <div className="space-y-2">
-                <label htmlFor="subject" className="text-sm font-medium">
-                  Subjek
-                </label>
+                <label className="text-xs font-bold text-[#4A3B3C] uppercase ml-1">Nama</label>
                 <Input
-                  id="subject"
-                  name="subject"
-                  value={formData.subject}
+                  name="name"
+                  value={formData.name}
                   onChange={handleChange}
-                  placeholder="Subjek pesan"
-                  className={errors.subject ? 'border-destructive' : ''}
+                  placeholder="Nama Lengkap"
+                  className="rounded-xl border-[#FFD1DC] focus:ring-[#FF85A1]"
                 />
-                {errors.subject && (
-                  <p className="text-xs text-destructive">{errors.subject}</p>
-                )}
+              </div>
+              
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-[#4A3B3C] uppercase ml-1">Email</label>
+                <Input
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="email@kamu.com"
+                  className="rounded-xl border-[#FFD1DC] focus:ring-[#FF85A1]"
+                />
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="message" className="text-sm font-medium">
-                  Pesan
-                </label>
+                <label className="text-xs font-bold text-[#4A3B3C] uppercase ml-1">Pesan</label>
                 <Textarea
-                  id="message"
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
-                  placeholder="Tuliskan pesan Anda..."
-                  rows={5}
-                  className={errors.message ? 'border-destructive' : ''}
+                  placeholder="Tulis pesanmu di sini..."
+                  rows={4}
+                  className="rounded-2xl border-[#FFD1DC] focus:ring-[#FF85A1]"
                 />
-                {errors.message && (
-                  <p className="text-xs text-destructive">{errors.message}</p>
-                )}
               </div>
 
               <Button
                 type="submit"
-                size="lg"
-                className="w-full rounded-full"
+                className="w-full rounded-full bg-[#FF85A1] hover:bg-[#ff7091] text-white py-6 shadow-lg shadow-[#FF85A1]/20 font-bold text-lg"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Mengirim...
-                  </>
+                  <Loader2 className="mr-2 animate-spin" />
                 ) : (
-                  <>
-                    <Send className="h-4 w-4 mr-2" />
-                    Kirim Pesan
-                  </>
+                  <><Send className="mr-2" size={18} /> Kirim Pesan</>
                 )}
               </Button>
             </form>

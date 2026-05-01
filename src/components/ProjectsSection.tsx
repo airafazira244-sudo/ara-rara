@@ -1,58 +1,35 @@
 import { motion } from 'framer-motion';
+import { ExternalLink, Play } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-const skills = {
-  entrepreneur: [
-    { name: 'Business Planning', level: 85 },
-    { name: 'Public Speaking', level: 90 },
-    { name: 'Marketing Strategy', level: 80 },
-    { name: 'Leadership', level: 88 },
-    { name: 'Creative Thinking', level: 95 },
-  ],
-  ips: [
-    { name: 'Ekonomi & Akuntansi', level: 92 },
-    { name: 'Sosiologi', level: 88 },
-    { name: 'Geografi', level: 85 },
-    { name: 'Sejarah Indonesia', level: 90 },
-    { name: 'Manajemen Bisnis', level: 82 },
-  ],
-  agama: [
-    { name: 'Fiqih & Ushul Fiqih', level: 90 },
-    { name: 'Akidah Akhlak', level: 95 },
-    { name: 'Al-Qur\'an Hadits', level: 88 },
-    { name: 'Sejarah Kebudayaan Islam', level: 92 },
-    { name: 'Bahasa Arab', level: 80 },
-  ],
-};
+const projects = [
+  {
+    title: 'Business Plan: Kedai Kreatif',
+    description: 'Rancangan bisnis kuliner modern khas Aceh dengan konsep kekinian untuk anak muda.',
+    tags: ['Entrepreneur', 'Ekonomi'],
+    image: '🛍️',
+    demo: '#',
+  },
+  {
+    title: 'Digital Poster: Stop Bullying',
+    description: 'Kampanye sosial kreatif untuk lingkungan MAN 1 Banda Aceh.',
+    tags: ['Desain', 'Sosial'],
+    image: '🎨',
+    demo: '#',
+  },
+  {
+    title: 'Vlog: Pesona Alam Aceh',
+    description: 'Dokumentasi perjalanan mengeksplorasi keindahan alam Aceh.',
+    tags: ['Travel', 'Content'],
+    image: '🎬',
+    isContent: true,
+    youtube: '#',
+  },
+];
 
-function SkillBar({ name, level, delay }) {
+export default function ProjectsSection() {
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay }}
-      className="space-y-2"
-    >
-      <div className="flex justify-between items-center">
-        <span className="font-medium text-[#4A3B3C]">{name}</span>
-        <span className="text-sm text-[#FF85A1] font-bold">{level}%</span>
-      </div>
-      <div className="h-2 bg-white/50 rounded-full overflow-hidden border border-[#FFD1DC]">
-        <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: `${level}%` }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, delay: delay + 0.2, ease: 'easeOut' }}
-          className="h-full rounded-full bg-[#FF85A1]"
-        />
-      </div>
-    </motion.div>
-  );
-}
-
-export default function SkillsSection() {
-  return (
-    <section id="skills" className="py-20 md:py-32 bg-[#FFF0F3]"> {/* Pink Soft Background */}
+    <section id="projects" className="py-20 md:py-32 bg-[#FFF0F3]">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -61,33 +38,50 @@ export default function SkillsSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="text-[#FF85A1] font-bold mb-2 block tracking-widest uppercase text-sm">Kemampuan Utama</span>
+          <span className="text-[#FF85A1] font-bold mb-2 block tracking-widest uppercase text-sm">Portofolio</span>
           <h2 className="font-display text-3xl md:text-5xl font-bold mb-4 text-[#4A3B3C]">
-            Skills & Bidang Studi
+            Karya & Pengalaman
           </h2>
           <div className="w-16 h-1.5 bg-[#FF85A1] mx-auto rounded-full" />
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {Object.entries(skills).map(([category, items], idx) => (
+          {projects.map((project, index) => (
             <motion.div
-              key={category}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              key={project.title}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: idx * 0.1 }}
-              className="p-8 bg-white/60 backdrop-blur-sm border border-[#FFD1DC] rounded-[2.5rem] shadow-sm"
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="group h-full"
             >
-              <div className="flex items-center gap-3 mb-8">
-                <div className="p-3 rounded-2xl bg-[#FF85A1] text-white shadow-md">
-                  {category === 'entrepreneur' ? '🚀' : category === 'ips' ? '📚' : '🕌'}
+              <div className="h-full p-8 bg-white/80 backdrop-blur-md border border-[#FFD1DC] rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all duration-500">
+                <div className="aspect-video rounded-2xl mb-6 flex items-center justify-center bg-[#FFF0F3] border border-[#FFD1DC] text-6xl">
+                  {project.image}
                 </div>
-                <h3 className="font-display text-xl font-bold text-[#4A3B3C] capitalize">{category}</h3>
-              </div>
-              <div className="space-y-6">
-                {items.map((skill, index) => (
-                  <SkillBar key={skill.name} {...skill} delay={index * 0.1} />
-                ))}
+                
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    {project.isContent && (
+                      <span className="px-2 py-0.5 text-[10px] rounded-full bg-[#FF85A1] text-white font-bold uppercase">Content</span>
+                    )}
+                    <h3 className="font-display text-xl font-bold text-[#4A3B3C] group-hover:text-[#FF85A1] transition-colors">{project.title}</h3>
+                  </div>
+                  <p className="text-sm text-[#6B5B5C] leading-relaxed">{project.description}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {project.tags.map(tag => (
+                      <span key={tag} className="px-3 py-1 text-[10px] font-bold rounded-lg bg-white text-[#FF85A1] border border-[#FFD1DC]">{tag}</span>
+                    ))}
+                  </div>
+                  <div className="pt-4">
+                    {project.demo && (
+                      <Button size="sm" className="w-full rounded-full bg-[#FF85A1] hover:bg-[#ff7091] text-white border-none shadow-md">Lihat Karya</Button>
+                    )}
+                    {project.youtube && (
+                      <Button size="sm" className="w-full rounded-full bg-[#FF4D6D] hover:bg-[#ff3355] text-white border-none shadow-md flex gap-2"><Play size={14}/> Tonton</Button>
+                    )}
+                  </div>
+                </div>
               </div>
             </motion.div>
           ))}
